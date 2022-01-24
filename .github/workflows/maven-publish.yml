@@ -6,36 +6,23 @@ name: Maven Package
 on:
   workflow_dispatch:
 
-jobs:
-  build:
-
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
-        server-id: ossrh
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
         
-    - name: Configure GPG Key
-      run: |
-        mkdir -p ~/.gnupg/
-        printf "$GPG_SIGNING_KEY_TEST" | base64 --decode > ~/.gnupg/private.key
-        gpg --import ~/.gnupg/private.key
-      env:
-        GPG_SECRET_KEY_TEST: ${{ secrets.GPG_SECRET_KEY_TEST }}
+jobs:
+  publish:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
 
-    - name: Sign & Publish package
-      run: mvn clean package deploy -Prelease-sign-artifacts
-      env:
-        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME_TEST }}
-        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN_TEST }}
+      - name: Install Java and Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Release Maven package
+        uses: samuelmeuli/action-maven-publish@v1.4.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_SIGNING_KEY_TEST }}
+          gpg_passphrase: ${{ secrets.GPG_SIGNING_KEY_PASSPHRASE_TEST }}
+          nexus_username: ${{ secrets.NEXUS_USERNAME_TEST }}
+          nexus_password: ${{ secrets.NEXUS_PASSWORD_TEST }}
