@@ -21,8 +21,8 @@ jobs:
       - name: Deploy
         uses: samuelmeuli/action-maven-publish@v1.4.0
         with:
-          gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
-          gpg_passphrase: ${{ secrets.GPG_SIGNING_KEY_PASSPHRASE }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY_1 }}
+          gpg_passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           maven_profiles: release-sign-artifacts
