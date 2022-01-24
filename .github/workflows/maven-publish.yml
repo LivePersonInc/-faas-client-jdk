@@ -31,6 +31,9 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.GPG_SIGNING_KEY_TEST }}") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
+      - name: List GPG keys
+        run: |
+          gpg --list-secret-keys 
       - name: Deploy
         run: |
           mvn -P release-sign-artifacts \
