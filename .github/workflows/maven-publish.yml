@@ -18,11 +18,19 @@ jobs:
         with:
           java-version: 11
           
-      - name: Deploy
-        uses: samuelmeuli/action-maven-publish@v1.4.0
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
         with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY_1 }}
-          gpg_passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          nexus_username: ${{ secrets.NEXUS_USERNAME }}
-          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          maven_profiles: release-sign-artifacts
+          java-version: 11
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Deploy
+        run: |
+          mvn clean package deploy -Prelease-sign-artifacts 
+        env:
+          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
