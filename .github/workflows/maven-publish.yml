@@ -32,7 +32,7 @@ jobs:
           cat <(echo -e "${{ secrets.GPG_SIGNING_KEY_TEST }}") | gpg --batch --import
       - name: Deploy
         run: |
-          mvn -P gpg_verify \
+          mvn -P release-sign-artifacts \
             --no-transfer-progress \
             --batch-mode -Dgpg.passphrase=${{ secrets.GPG_SIGNING_KEY_PASSPHRASE_TEST }} \
             --file pom.xml -s release/m2-settings.xml verify deploy
