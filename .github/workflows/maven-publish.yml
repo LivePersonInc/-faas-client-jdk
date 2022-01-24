@@ -25,12 +25,12 @@ jobs:
           server-id: ossrh
           server-username: OSSRH_USERNAME
           server-password: OSSRH_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_SIGNING_KEY_TEST }}
+          gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Deploy
         run: |
           mvn clean package deploy -Prelease-sign-artifacts 
         env:
-          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME_TEST }}
-          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD_TEST }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSPHRASE_TEST }}
+          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSPHRASE }}
