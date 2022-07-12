@@ -4,5 +4,13 @@
     ":disableDependencyDashboard",
     ":rebaseStalePrs",
     ":prNotPending",
+  ],
+  "packageRules": [
+    {
+      "groupName": "log4j",
+      "matchPackagePrefixes": [
+        "org.apache.logging.log4j:"
+      ]
+    }
   ]
 }
