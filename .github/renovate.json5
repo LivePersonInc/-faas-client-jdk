@@ -7,7 +7,8 @@
   ],
   "packageRules": [
     {
-      "groupName": "log4j",
+      "groupSlug": "log4j",
+      "groupName": "log4j packages",
       "matchPackagePrefixes": [
         "org.apache.logging.log4j:"
       ]
