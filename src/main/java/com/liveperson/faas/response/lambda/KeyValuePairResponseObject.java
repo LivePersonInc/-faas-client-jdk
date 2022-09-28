@@ -1,7 +1,10 @@
 package com.liveperson.faas.response.lambda;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValuePairResponseObject {
 
 	private String key;
