@@ -24,7 +24,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Integration testing with Maven
         run: |
-          echo "This is accountId ${{ secrets.NEXUS_USERNAME }}"
+          mvn test -Dtest=FaaSIntegrationClientTest
         env:
           ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
           LAMBDAUUID: ${{ secrets.LAMBDAUUID }}
