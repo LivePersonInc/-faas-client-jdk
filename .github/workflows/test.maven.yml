@@ -22,3 +22,10 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
+      env:
+        ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+        LAMBDAUUID: ${{ secrets.LAMBDAUUID }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        USER: ${{ secrets.USER }}
+        PASS: ${{ secrets.PASS }}
