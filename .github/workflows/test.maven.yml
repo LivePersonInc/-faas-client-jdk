@@ -21,4 +21,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn test -Dtest=!FaaSIntegrationClientTest
+      run: mvn --batch-mode --update-snapshots verify -DIntegrationModule.test.excludes="**/*FaaSIntegrationClientTest.java"
