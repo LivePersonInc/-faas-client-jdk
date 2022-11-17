@@ -9,24 +9,29 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
-      run: echo "The AccountId is:${{ secrets.ACCOUNT_ID }}"
-    - name: Integration testing with Maven
-      run: mvn test -Dtest=FaaSIntegrationClientTest 
-      env:
-        ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
-        LAMBDAUUID: ${{ secrets.LAMBDAUUID }}
-        CLIENT_ID: ${{ secrets.CLIENT_ID }}
-        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        USER: ${{ secrets.USER }}
-        PASS: ${{ secrets.PASS }}
+      - uses: actions/checkout@v3
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY_1 }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Integration testing with Maven
+        run: |
+          mvn test -Dtest=FaaSIntegrationClientTest 
+        env:
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+          LAMBDAUUID: ${{ secrets.LAMBDAUUID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          USER: ${{ secrets.USER }}
+          PASS: ${{ secrets.PASS }}
+          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
