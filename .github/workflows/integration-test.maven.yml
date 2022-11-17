@@ -1,12 +1,11 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+# This workflow will run Integration Tests for the project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Maven Package
+name: Integration Tests
 
 on:
-  workflow_dispatch:
-
-
+  pull_request:
+    branches: [ develop, master ]
 
 jobs:
   build:
@@ -23,16 +22,16 @@ jobs:
           server-password: OSSRH_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY_1 }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: Deploy
+      - name: Integration testing with Maven
         run: |
-          mvn clean package deploy -Prelease-sign-artifacts 
+          mvn test -Dtest=FaaSIntegrationClientTest
         env:
-          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
           LAMBDAUUID: ${{ secrets.LAMBDAUUID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           USER: ${{ secrets.USER }}
           PASS: ${{ secrets.PASS }}
+          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
