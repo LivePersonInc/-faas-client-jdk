@@ -20,6 +20,7 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+      run: echo "The AccountId is:${{ secrets.ACCOUNT_ID }}"
     - name: Integration testing with Maven
       run: mvn test -Dtest=FaaSIntegrationClientTest 
       env:
