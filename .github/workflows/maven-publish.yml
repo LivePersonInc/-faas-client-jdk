@@ -30,3 +30,9 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+          LAMBDAUUID: ${{ secrets.LAMBDAUUID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          USER: ${{ secrets.USER }}
+          PASS: ${{ secrets.PASS }}
