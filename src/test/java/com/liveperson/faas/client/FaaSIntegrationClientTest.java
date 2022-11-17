@@ -250,8 +250,6 @@ class AuthSignature implements AuthSignatureBuilder {
     private String authHeader;
 
     public AuthSignature() throws TokenGenerationException {
-        System.out.println("accountId:" );
-        System.out.println(accountId);
         this.bearerGenerator = new AuthBearerGenerator(restClient, csdsClient, accountId, username, password);
         this.authHeader = bearerGenerator.retrieveBearerToken();
         this.configData = bearerGenerator.retrieveBearerConfig();
