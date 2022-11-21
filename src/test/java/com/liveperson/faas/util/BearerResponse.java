@@ -1,4 +1,4 @@
-package com.liveperson.faas.security.types;
+package com.liveperson.faas.util;
 
 import java.util.Objects;
 

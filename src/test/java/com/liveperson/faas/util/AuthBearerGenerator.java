@@ -1,4 +1,4 @@
-package com.liveperson.faas.security;
+package com.liveperson.faas.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,8 +6,10 @@ import com.liveperson.faas.csds.CsdsClient;
 import com.liveperson.faas.exception.CsdsRetrievalException;
 import com.liveperson.faas.exception.TokenGenerationException;
 import com.liveperson.faas.http.RestClient;
-import com.liveperson.faas.security.types.BearerConfigResponseObject;
-import com.liveperson.faas.security.types.BearerResponse;
+import com.liveperson.faas.security.AuthExpiryTester;
+import com.liveperson.faas.security.BearerGenerator;
+import com.liveperson.faas.security.JwtExpiryTester;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

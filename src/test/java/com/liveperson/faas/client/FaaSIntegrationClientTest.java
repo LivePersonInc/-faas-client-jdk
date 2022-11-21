@@ -8,9 +8,9 @@ import com.liveperson.faas.http.DefaultRestClient;
 import com.liveperson.faas.metriccollector.MetricCollector;
 import com.liveperson.faas.response.lambda.ErrorLogResponseObject;
 import com.liveperson.faas.response.lambda.LambdaResponse;
-import com.liveperson.faas.security.AuthBearerGenerator;
 import com.liveperson.faas.security.AuthSignatureBuilder;
-import com.liveperson.faas.security.types.BearerConfigResponseObject;
+import com.liveperson.faas.util.AuthBearerGenerator;
+import com.liveperson.faas.util.BearerConfigResponseObject;
 import com.liveperson.faas.util.EventResponse;
 import com.liveperson.faas.util.UUIDResponse;
 
