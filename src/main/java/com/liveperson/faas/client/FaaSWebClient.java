@@ -437,9 +437,9 @@ public class FaaSWebClient implements FaaSClient {
     /**
      * Set headers for the RESTful call
      *
-     * @param authorizationHeader the authorization header
+     * @param accessToken the Oauth2 + DPoP access token
      * @param requestId
-     * @param dpopJwt             the DPoP header
+     * @param dpopJwt the DPoP header
      * @return the relevant headers
      */
     private Map<String, String> setHeaders(String accessToken, String requestId, String dpopJwt) {
