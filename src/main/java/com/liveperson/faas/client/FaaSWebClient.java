@@ -513,7 +513,7 @@ public class FaaSWebClient implements FaaSClient {
             return this;
         }
 
-        public Builder withAuthDpopSignatureBuilder(AuthDPoPSignatureBuilder authDPoPSignatureBuilder) {
+        public Builder withAuthDPoPSignatureBuilder(AuthDPoPSignatureBuilder authDPoPSignatureBuilder) {
             this.authDPoPSignatureBuilder = authDPoPSignatureBuilder;
             return this;
         }

@@ -729,7 +729,7 @@ public class FaaSClientWithDpopAuthTest {
     private FaaSWebClient getFaaSClient() {
         return new FaaSWebClient.Builder(accountId).withCsdsClient(csdsClientMock)
                 .withRestClient(restClientMock)
-                .withAuthDpopSignatureBuilder(this.authDPoPSignatureBuilder)
+                .withAuthDPoPSignatureBuilder(this.authDPoPSignatureBuilder)
                 .withMetricCollector(metricCollectorMock)
                 .withIsImplementedCache(defaultIsImplementedCacheMock)
                 .build();
