@@ -18,7 +18,7 @@ Go to your project's pom.xml file and add as dependency.
 <dependency>
   <groupId>com.liveperson.faas</groupId>
   <artifactId>functions-client</artifactId>
-  <version>1.1.6</version>
+  <version>1.2.2</version>
 </dependency>
 ```
 
@@ -145,7 +145,7 @@ optionalParams.setRequestId("requestId");
 ### Fetching lambdas
 
 
-**You have to use your own authentication method when fetching lambdas as it still relies on OAuth 1.0.**
+**You have to use your own authentication method when fetching lambdas as it relies on OAuth 1.0. / Oauth 2.0 + DPoP**
 
 
 <details><summary>Fetching lambdas of account</summary>

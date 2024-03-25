@@ -11,6 +11,7 @@ import com.liveperson.faas.exception.*;
 import com.liveperson.faas.http.RestClient;
 import com.liveperson.faas.metriccollector.MetricCollector;
 import com.liveperson.faas.response.lambda.LambdaResponse;
+import com.liveperson.faas.security.AuthDpopSignatureBuilder;
 import com.liveperson.faas.security.AuthSignatureBuilder;
 import com.liveperson.faas.util.EventResponse;
 import com.liveperson.faas.util.UUIDResponse;
@@ -31,12 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,6 +50,8 @@ public class FaaSClientTest {
     private final SimpleDateFormat mockDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     @InjectMocks
     private FaaSWebClient client;
+    @InjectMocks
+    private FaaSWebClient clientWithDPoP;
     @Mock
     private RestClient restClientMock;
     @Mock
@@ -60,6 +66,8 @@ public class FaaSClientTest {
     @Mock
     private AuthSignatureBuilder authSignatureBuilder;
     @Mock
+    private AuthDpopSignatureBuilder authDPoPSignatureBuilder;
+    @Mock
     private MetricCollector metricCollectorMock;
     @Mock
     private DefaultIsImplementedCache defaultIsImplementedCacheMock;
@@ -73,12 +81,16 @@ public class FaaSClientTest {
     private String faasUIUrl = "faasUI.com";
     private String requestId = "requestId";
     private int defaultTimeOut = 15000;
+    // Oauth2 + DPOP
+    private String accessToken = "some_access_token";
+    private String dpopHeader = "dpopJWT";
 
     private OptionalParams optionalParams;
 
     @Before
     public void before() throws Exception {
         client = getFaaSClient();
+        clientWithDPoP = getFaaSClientWithDpopAuth();
         optionalParams = new OptionalParams();
         mockDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         optionalParams.setTimeOutInMs(defaultTimeOut);
@@ -86,6 +98,9 @@ public class FaaSClientTest {
         when(csdsClientMock.getDomain(eq(FaaSWebClient.CSDS_GW_SERVICE_NAME))).thenReturn(faasGWUrl);
         when(csdsClientMock.getDomain(eq(FaaSWebClient.CSDS_UI_SERVICE_NAME))).thenReturn(faasUIUrl);
         when(authSignatureBuilder.getAuthHeader()).thenReturn(authHeader);
+        // Oauth2 + DPoP
+        when(authDPoPSignatureBuilder.getAccessTokenInternal(anyString())).thenReturn(accessToken);
+        when(authDPoPSignatureBuilder.getDpopHeaderInternal(anyString(), anyString(), anyString())).thenReturn(dpopHeader);
     }
 
     @Test
@@ -111,7 +126,28 @@ public class FaaSClientTest {
                 "X-REQUEST-ID").contains(requestId));
         assertEquals("Lambda invocation result does not match expected value",
                 "lambda_result", response);
+    }
 
+    @Test
+    public void invokeViaUUIDWithDPoP() throws Exception {
+        String payload = "request_data";
+        long timestamp = System.currentTimeMillis();
+        FaaSInvocation<String> invocationData = new FaaSInvocation<String>(null, payload);
+        invocationData.setTimestamp(timestamp);
+
+        when(restClientMock.post(eq(getExpectedInvokeUUIDUrl()), httpHeaderCaptor.capture(),
+                httpBodyCaptor.capture(), eq(defaultTimeOut))).thenReturn("\"lambda_result\"");
+        String response = clientWithDPoP.invokeByUUID(externalSystem, lambdaUUID, invocationData, String.class, optionalParams
+        );
+
+        verify(metricCollectorMock, times(1)).onInvokeByUUIDSuccess(eq(externalSystem), anyFloat(), eq(lambdaUUID),
+                eq(accountId));
+        assertEquals("Lambda invocation with the wrong body",
+        getExpectedRequestBody(timestamp, "[]", "\"request_data\""), httpBodyCaptor.getValue());
+        assertTrue("Lambda invocation with wrong authorization header", httpHeaderCaptor.getValue().get("Authorization").equals("DPoP " + accessToken));
+        assertTrue("Lambda invocation with wrong DPoP header", httpHeaderCaptor.getValue().get("DPoP").equals(dpopHeader));
+        assertEquals("Lambda invocation result does not match expected value",
+                "lambda_result", response);
     }
 
     @Test
@@ -280,6 +316,45 @@ public class FaaSClientTest {
                 httpBodyCaptor.getValue());
         assertTrue("Lambda invocation with wrong authorization header", httpHeaderCaptor.getValue().get(
                 "Authorization").contains("Bearer"));
+        assertEquals("Lambda invocation result does not match expected value", expectedResponse.toString(),
+                response[0].toString());
+    }
+
+
+    @Test
+    public void invokeViaEventTypeWithAuthDPoP() throws Exception {
+        UUIDResponse payload = new UUIDResponse();
+        payload.key = "requestKey";
+        payload.value = "requestValue";
+        long timestamp = System.currentTimeMillis();
+        String mockResponse = "[\n" +
+                "  {\n" +
+                "    \"uuid\": \"" + lambdaUUID + "\",\n" +
+                "    \"timestamp\": \"2017-07-09\",\n" +
+                "    \"result\": {\n" +
+                "      \"key\": \"responseKey\",\n" +
+                "      \"value\": \"responseValue\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "]";
+        Map<String, String> headers = getTestHeaders();
+        FaaSInvocation<UUIDResponse> invocationData = getUUIDResponseFaaSInvocation(payload, timestamp, headers);
+        EventResponse expectedResponse = getExpectedResponse();
+
+        when(restClientMock.post(eq(getExpectedInvokeEventUrl()), httpHeaderCaptor.capture(),
+                httpBodyCaptor.capture(), eq(defaultTimeOut))).thenReturn(mockResponse);
+        EventResponse[] response = clientWithDPoP.invokeByEvent(externalSystem,
+                FaaSEvent.ChatPostSurveyEmailTranscript,
+                invocationData, EventResponse[].class, optionalParams);
+
+        verify(metricCollectorMock, times(1)).onInvokeByEventSuccess(eq(externalSystem), anyInt(), eq(event.toString()),
+                eq(accountId));
+        assertEquals("Lambda invocation with the wrong body",
+                getExpectedRequestBody(timestamp, "[{\"key\":\"testHeader\",\"value\":\"testHeaderValue\"}]", "{\"key" +
+                        "\":\"requestKey\",\"value\":\"requestValue\"}"),
+                httpBodyCaptor.getValue());
+        assertTrue("Lambda invocation with wrong authorization header", httpHeaderCaptor.getValue().get("Authorization").equals("DPoP " + accessToken));
+        assertTrue("Lambda invocation with wrong DPoP header", httpHeaderCaptor.getValue().get("DPoP").equals(dpopHeader));
         assertEquals("Lambda invocation result does not match expected value", expectedResponse.toString(),
                 response[0].toString());
     }
@@ -583,6 +658,23 @@ public class FaaSClientTest {
     }
 
     @Test
+    public void getLambdasWithAuthDPoP() throws Exception {
+        String mockResponse = getMockResponse();
+
+        when(restClientMock.get(eq(getExpectedLambdasOfAnAccountUrl()), httpHeaderCaptor.capture(), eq(defaultTimeOut)))
+                .thenReturn(mockResponse);
+        List<LambdaResponse> actualResponse = clientWithDPoP.getLambdas(userId, new HashMap<String, String>(), optionalParams);
+        List<LambdaResponse> expectedResponse = objectMapper.readValue(mockResponse,
+                new TypeReference<List<LambdaResponse>>() {
+                });
+
+        verify(metricCollectorMock, times(1)).onGetLambdasSuccess(eq(userId), anyFloat(), eq(accountId));
+        assertTrue("Lambda invocation with wrong authorization header", httpHeaderCaptor.getValue().get("Authorization").equals("DPoP " + accessToken));
+        assertTrue("Lambda invocation with wrong DPoP header", httpHeaderCaptor.getValue().get("DPoP").equals(dpopHeader));
+        assertEquals(expectedResponse.get(0), actualResponse.get(0));
+    }
+
+    @Test
     public void getLambdasWithOptionalQueryParameters() throws IOException {
         Map<String, String> headers = getHeaders();
         LambdaResponse lambdaResponse = new LambdaResponse();
@@ -710,6 +802,15 @@ public class FaaSClientTest {
                 .build();
     }
     
+    private FaaSWebClient getFaaSClientWithDpopAuth() {
+        return new FaaSWebClient.Builder(accountId).withCsdsClient(csdsClientMock)
+                .withRestClient(restClientMock)
+                .withAuthDPoPSignatureBuilder(this.authDPoPSignatureBuilder)
+                .withMetricCollector(metricCollectorMock)
+                .withIsImplementedCache(defaultIsImplementedCacheMock)
+                .build();
+    }
+
     private Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", authHeader);
