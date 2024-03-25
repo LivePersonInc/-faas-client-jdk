@@ -4,29 +4,31 @@ import com.liveperson.faas.exception.TokenGenerationException;
 import com.liveperson.faas.exception.DpopJwtGenerationException;
 
 /**
- * Generates a Oauth2 + DPop for authentication purposes on LivePerson internal systems
+ * Generates a Oauth2 + DPoP for authentication purposes
+ * OAuth2+DPoP authentication is only available INTERNALLY for service-to-service.
  *
- * @author sschwarz
+ * @author eplazaso
  */
-public interface AuthDPoPSignatureBuilder {
+public interface AuthDpopSignatureBuilder {
 
     /**
-     * Generate Oauth2 access token string
+     * Generate Oauth2 access token string. Called whenever the faas-client needs to authenticate to send a request.
+     * Its return value is used in the 'Authorization'-header of the request.
      * 
-     * @param domainUrl
+     * @param domainUrl Protocol (HTTPS) + domain of the API registered in the authentication server required to get the access token. E.g., https://va.faasgw.liveperson.net
      * @throws TokenGenerationException when token generation fails
-     * @return the access token
+     * @return a string containing the access token that will be included in the 'Authorization' header
      */
     String getAccessTokenInternal(String domainUrl) throws TokenGenerationException;
 
     /**
-     * Generate the DPoP header
+     * Generate the DPoP header. Called whenever the faas-client needs to authenticate to send a request.
      * 
-     * @param url
-     * @param method
-     * @param accessToken
-     * @return
-     * @throws DpopJwtGenerationException
+     * @param url Request 'url' including protocol domain and path
+     * @param method 'http-method' of the request
+     * @param accessToken A string containing the access token that was returned by 'getAccessTokenInternal' method
+     * @return The the 'DPoP' header of the request.
+     * @throws DpopJwtGenerationException  when DPoP header generation fails
      */
     String getDpopHeaderInternal(String url, String method, String accessToken) throws DpopJwtGenerationException;
 

@@ -11,7 +11,7 @@ import com.liveperson.faas.exception.*;
 import com.liveperson.faas.http.RestClient;
 import com.liveperson.faas.metriccollector.MetricCollector;
 import com.liveperson.faas.response.lambda.LambdaResponse;
-import com.liveperson.faas.security.AuthDPoPSignatureBuilder;
+import com.liveperson.faas.security.AuthDpopSignatureBuilder;
 import com.liveperson.faas.security.AuthSignatureBuilder;
 import com.liveperson.faas.util.EventResponse;
 import com.liveperson.faas.util.UUIDResponse;
@@ -66,7 +66,7 @@ public class FaaSClientWithDpopAuthTest {
     private String dpopHeader = "dpopJWT";
 
     @Mock
-    private AuthDPoPSignatureBuilder authDPoPSignatureBuilder;
+    private AuthDpopSignatureBuilder authDPoPSignatureBuilder;
     @Mock
     private MetricCollector metricCollectorMock;
     @Mock
@@ -734,17 +734,6 @@ public class FaaSClientWithDpopAuthTest {
                 .withIsImplementedCache(defaultIsImplementedCacheMock)
                 .build();
     }
-
-    private ConcurrentMap<String, FaaSEventImplementedExpiry> setUpCache() {
-        ConcurrentMap<String, FaaSEventImplementedExpiry> implementationCache = new ConcurrentHashMap<>();
-        LocalDateTime futureExpirationDate = LocalDateTime.now().plusMinutes(5);
-        FaaSEventImplementedExpiry expiry = new FaaSEventImplementedExpiry();
-        expiry.setImplemented(true);
-        expiry.setExpirationDate(futureExpirationDate);
-        implementationCache.put(event.toString(), expiry);
-        return implementationCache;
-    }
-
     private Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "DPoP " + authHeader);

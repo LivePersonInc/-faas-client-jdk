@@ -709,17 +709,7 @@ public class FaaSClientTest {
                 .withIsImplementedCache(defaultIsImplementedCacheMock)
                 .build();
     }
-
-    private ConcurrentMap<String, FaaSEventImplementedExpiry> setUpCache() {
-        ConcurrentMap<String, FaaSEventImplementedExpiry> implementationCache = new ConcurrentHashMap<>();
-        LocalDateTime futureExpirationDate = LocalDateTime.now().plusMinutes(5);
-        FaaSEventImplementedExpiry expiry = new FaaSEventImplementedExpiry();
-        expiry.setImplemented(true);
-        expiry.setExpirationDate(futureExpirationDate);
-        implementationCache.put(event.toString(), expiry);
-        return implementationCache;
-    }
-
+    
     private Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", authHeader);

@@ -15,7 +15,7 @@ import com.liveperson.faas.http.RestClient;
 import com.liveperson.faas.metriccollector.MetricCollector;
 import com.liveperson.faas.metriccollector.NullMetricCollector;
 import com.liveperson.faas.response.lambda.LambdaResponse;
-import com.liveperson.faas.security.AuthDPoPSignatureBuilder;
+import com.liveperson.faas.security.AuthDpopSignatureBuilder;
 import com.liveperson.faas.security.AuthSignatureBuilder;
 import com.liveperson.faas.security.JwtSignatureBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -76,7 +76,7 @@ public class FaaSWebClient implements FaaSClient {
     private CsdsClient csdsClient;
     private RestClient restClient;
     private AuthSignatureBuilder authSignatureBuilder;
-    private AuthDPoPSignatureBuilder authDPoPSignatureBuilder;
+    private AuthDpopSignatureBuilder authDPoPSignatureBuilder;
     private MetricCollector metricCollector;
     private String accountId;
     private IsImplementedCache isImplementedCache;
@@ -477,7 +477,7 @@ public class FaaSWebClient implements FaaSClient {
         private Map<String, String> csdsMap;
         private RestClient restClient;
         private AuthSignatureBuilder authSignatureBuilder;
-        private AuthDPoPSignatureBuilder authDPoPSignatureBuilder;
+        private AuthDpopSignatureBuilder authDpopSignatureBuilder;
         private MetricCollector metricCollector;
         private String accountId;
         private String clientSecret;
@@ -513,8 +513,8 @@ public class FaaSWebClient implements FaaSClient {
             return this;
         }
 
-        public Builder withAuthDPoPSignatureBuilder(AuthDPoPSignatureBuilder authDPoPSignatureBuilder) {
-            this.authDPoPSignatureBuilder = authDPoPSignatureBuilder;
+        public Builder withAuthDPoPSignatureBuilder(AuthDpopSignatureBuilder authDpopSignatureBuilder) {
+            this.authDpopSignatureBuilder = authDpopSignatureBuilder;
             return this;
         }
 
@@ -560,11 +560,11 @@ public class FaaSWebClient implements FaaSClient {
             } else if (isInitalized(this.clientSecret) && isInitalized(this.clientId)) {
                 client.authSignatureBuilder = new JwtSignatureBuilder(client.restClient, client.csdsClient, accountId,
                         this.clientId, this.clientSecret);
-            } else if (isInitalized(this.authDPoPSignatureBuilder)) {
-                client.authDPoPSignatureBuilder = this.authDPoPSignatureBuilder;
+            } else if (isInitalized(this.authDpopSignatureBuilder)) {
+                client.authDPoPSignatureBuilder = this.authDpopSignatureBuilder;
             } else {
                 throw new IllegalStateException(
-                        "Neither AuthSignatureBuilder instance, nor clientId and clientSecret, nor AuthDPoPSignatureBuilder"
+                        "Neither AuthSignatureBuilder instance, nor clientId and clientSecret, nor AuthDpopSignatureBuilder"
                                 +
                                 " were provided, thus impossible to use any authentication method");
             }
