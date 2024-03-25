@@ -482,7 +482,7 @@ public class FaaSWebClient implements FaaSClient {
         private Map<String, String> csdsMap;
         private RestClient restClient;
         private AuthSignatureBuilder authSignatureBuilder;
-        private AuthDPoPSignatureBuilder authDpopSignatureBuilder;
+        private AuthDPoPSignatureBuilder authDPoPSignatureBuilder;
         private MetricCollector metricCollector;
         private String accountId;
         private String clientSecret;
@@ -518,8 +518,8 @@ public class FaaSWebClient implements FaaSClient {
             return this;
         }
 
-        public Builder withAuthDPoPSignatureBuilder(AuthDPoPSignatureBuilder authDpopSignatureBuilder) {
-            this.authDpopSignatureBuilder = authDpopSignatureBuilder;
+        public Builder withAuthDPoPSignatureBuilder(AuthDPoPSignatureBuilder authDPoPSignatureBuilder) {
+            this.authDPoPSignatureBuilder = authDPoPSignatureBuilder;
             return this;
         }
 
@@ -565,8 +565,8 @@ public class FaaSWebClient implements FaaSClient {
             } else if (isInitalized(this.clientSecret) && isInitalized(this.clientId)) {
                 client.authSignatureBuilder = new JwtSignatureBuilder(client.restClient, client.csdsClient, accountId,
                         this.clientId, this.clientSecret);
-            } else if (isInitalized(this.authDpopSignatureBuilder)) {
-                client.authDPoPSignatureBuilder = this.authDpopSignatureBuilder;
+            } else if (isInitalized(this.authDPoPSignatureBuilder)) {
+                client.authDPoPSignatureBuilder = this.authDPoPSignatureBuilder;
             } else {
                 throw new IllegalStateException(
                         "Neither AuthSignatureBuilder instance, nor clientId and clientSecret, nor AuthDpopSignatureBuilder"

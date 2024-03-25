@@ -1,7 +1,7 @@
 package com.liveperson.faas.security;
 
 import com.liveperson.faas.exception.TokenGenerationException;
-import com.liveperson.faas.exception.DpopJwtGenerationException;
+import com.liveperson.faas.exception.DPoPJwtGenerationException;
 
 /**
  * Generates a Oauth2 + DPoP for authentication purposes
@@ -28,8 +28,8 @@ public interface AuthDPoPSignatureBuilder {
      * @param method 'http-method' of the request
      * @param accessToken A string containing the access token that was returned by 'getAccessTokenInternal' method
      * @return The the 'DPoP' header of the request.
-     * @throws DpopJwtGenerationException  when DPoP header generation fails
+     * @throws DPoPJwtGenerationException  when DPoP header generation fails
      */
-    String getDpopHeaderInternal(String url, String method, String accessToken) throws DpopJwtGenerationException;
+    String getDpopHeaderInternal(String url, String method, String accessToken) throws DPoPJwtGenerationException;
 
 }

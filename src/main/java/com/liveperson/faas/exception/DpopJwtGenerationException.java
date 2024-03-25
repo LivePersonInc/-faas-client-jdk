@@ -1,12 +1,12 @@
 package com.liveperson.faas.exception;
 
-public class DpopJwtGenerationException extends Exception {
+public class DPoPJwtGenerationException extends Exception {
 
-    public DpopJwtGenerationException(String message) {
+    public DPoPJwtGenerationException(String message) {
         super(message);
     }
 
-    public DpopJwtGenerationException(String message, Throwable cause) {
+    public DPoPJwtGenerationException(String message, Throwable cause) {
         super(message, cause);
     }
 }
