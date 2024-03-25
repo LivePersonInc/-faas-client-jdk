@@ -142,8 +142,12 @@ public class FaaSClientTest {
 
         verify(metricCollectorMock, times(1)).onInvokeByUUIDSuccess(eq(externalSystem), anyFloat(), eq(lambdaUUID),
                 eq(accountId));
-        assertEquals("Lambda invocation with the wrong body",
-        getExpectedRequestBody(timestamp, "[]", "\"request_data\""), httpBodyCaptor.getValue());
+        verify(authDPoPSignatureBuilder, times(1)).getAccessTokenInternal(eq("https://"+faasGWUrl));
+        verify(authDPoPSignatureBuilder, times(1)).getDpopHeaderInternal(
+                eq("https://" + faasGWUrl + "/api/account/" + accountId + "/lambdas/"+ lambdaUUID +"/invoke?externalSystem=test_system&v=1"),
+                eq("POST"), eq(accessToken));
+        assertEquals("Lambda invocation with the wrong body", 
+                getExpectedRequestBody(timestamp, "[]", "\"request_data\""), httpBodyCaptor.getValue());
         assertTrue("Lambda invocation with wrong authorization header", httpHeaderCaptor.getValue().get("Authorization").equals("DPoP " + accessToken));
         assertTrue("Lambda invocation with wrong DPoP header", httpHeaderCaptor.getValue().get("DPoP").equals(dpopHeader));
         assertEquals("Lambda invocation result does not match expected value",
@@ -349,6 +353,10 @@ public class FaaSClientTest {
 
         verify(metricCollectorMock, times(1)).onInvokeByEventSuccess(eq(externalSystem), anyInt(), eq(event.toString()),
                 eq(accountId));
+        verify(authDPoPSignatureBuilder, times(1)).getAccessTokenInternal(eq("https://"+faasGWUrl));
+        verify(authDPoPSignatureBuilder, times(1)).getDpopHeaderInternal(
+                eq("https://" + faasGWUrl + "/api/account/" + accountId + "/events/"+ event +"/invoke?externalSystem=test_system&v=1"),
+                eq("POST"), eq(accessToken));
         assertEquals("Lambda invocation with the wrong body",
                 getExpectedRequestBody(timestamp, "[{\"key\":\"testHeader\",\"value\":\"testHeaderValue\"}]", "{\"key" +
                         "\":\"requestKey\",\"value\":\"requestValue\"}"),
@@ -669,6 +677,10 @@ public class FaaSClientTest {
                 });
 
         verify(metricCollectorMock, times(1)).onGetLambdasSuccess(eq(userId), anyFloat(), eq(accountId));
+        verify(authDPoPSignatureBuilder, times(1)).getAccessTokenInternal(eq("https://"+faasUIUrl));
+        verify(authDPoPSignatureBuilder, times(1)).getDpopHeaderInternal(
+                eq("https://" + faasUIUrl + "/api/account/" + accountId + "/lambdas?v=1&userId=" + userId),
+                eq("GET"), eq(accessToken));
         assertTrue("Lambda invocation with wrong authorization header", httpHeaderCaptor.getValue().get("Authorization").equals("DPoP " + accessToken));
         assertTrue("Lambda invocation with wrong DPoP header", httpHeaderCaptor.getValue().get("DPoP").equals(dpopHeader));
         assertEquals(expectedResponse.get(0), actualResponse.get(0));
