@@ -11,7 +11,7 @@ import com.liveperson.faas.exception.*;
 import com.liveperson.faas.http.RestClient;
 import com.liveperson.faas.metriccollector.MetricCollector;
 import com.liveperson.faas.response.lambda.LambdaResponse;
-import com.liveperson.faas.security.AuthDpopSignatureBuilder;
+import com.liveperson.faas.security.AuthDPoPSignatureBuilder;
 import com.liveperson.faas.security.AuthSignatureBuilder;
 import com.liveperson.faas.util.EventResponse;
 import com.liveperson.faas.util.UUIDResponse;
@@ -66,7 +66,7 @@ public class FaaSClientTest {
     @Mock
     private AuthSignatureBuilder authSignatureBuilder;
     @Mock
-    private AuthDpopSignatureBuilder authDPoPSignatureBuilder;
+    private AuthDPoPSignatureBuilder authDPoPSignatureBuilder;
     @Mock
     private MetricCollector metricCollectorMock;
     @Mock

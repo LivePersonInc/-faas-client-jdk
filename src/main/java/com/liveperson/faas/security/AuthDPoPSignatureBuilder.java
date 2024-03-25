@@ -9,7 +9,7 @@ import com.liveperson.faas.exception.DpopJwtGenerationException;
  *
  * @author eplazaso
  */
-public interface AuthDpopSignatureBuilder {
+public interface AuthDPoPSignatureBuilder {
 
     /**
      * Generate Oauth2 access token string. Called whenever the faas-client needs to authenticate to send a request.

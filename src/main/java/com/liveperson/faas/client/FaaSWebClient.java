@@ -15,7 +15,7 @@ import com.liveperson.faas.http.RestClient;
 import com.liveperson.faas.metriccollector.MetricCollector;
 import com.liveperson.faas.metriccollector.NullMetricCollector;
 import com.liveperson.faas.response.lambda.LambdaResponse;
-import com.liveperson.faas.security.AuthDpopSignatureBuilder;
+import com.liveperson.faas.security.AuthDPoPSignatureBuilder;
 import com.liveperson.faas.security.AuthSignatureBuilder;
 import com.liveperson.faas.security.JwtSignatureBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -76,7 +76,7 @@ public class FaaSWebClient implements FaaSClient {
     private CsdsClient csdsClient;
     private RestClient restClient;
     private AuthSignatureBuilder authSignatureBuilder;
-    private AuthDpopSignatureBuilder authDPoPSignatureBuilder;
+    private AuthDPoPSignatureBuilder authDPoPSignatureBuilder;
     private MetricCollector metricCollector;
     private String accountId;
     private IsImplementedCache isImplementedCache;
@@ -482,7 +482,7 @@ public class FaaSWebClient implements FaaSClient {
         private Map<String, String> csdsMap;
         private RestClient restClient;
         private AuthSignatureBuilder authSignatureBuilder;
-        private AuthDpopSignatureBuilder authDpopSignatureBuilder;
+        private AuthDPoPSignatureBuilder authDpopSignatureBuilder;
         private MetricCollector metricCollector;
         private String accountId;
         private String clientSecret;
@@ -518,7 +518,7 @@ public class FaaSWebClient implements FaaSClient {
             return this;
         }
 
-        public Builder withAuthDPoPSignatureBuilder(AuthDpopSignatureBuilder authDpopSignatureBuilder) {
+        public Builder withAuthDPoPSignatureBuilder(AuthDPoPSignatureBuilder authDpopSignatureBuilder) {
             this.authDpopSignatureBuilder = authDpopSignatureBuilder;
             return this;
         }
