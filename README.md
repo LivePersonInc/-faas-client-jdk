@@ -35,7 +35,7 @@ FaasClient.Builder builder = new FaasWebClient.Builder(accountId);
 
 Furthermore you have to choose a method of authorization.
 Either you provide a client secret and client Id, as we use OAuth 2.0 with client credentials by default, 
-or you alternatively pass your own implementation of the `AuthSignatureBilder` or `AuthDPoPSignatureBuilder`.
+or you alternatively pass your own implementation of the `AuthSignatureBilder` or `AuthDpopSignatureBuilder`.
 
 * [More information on Client Credentials](https://developers.liveperson.com/liveperson-functions-foundations-external-invocation.html#authentication)
 
@@ -48,7 +48,7 @@ or
 AuthSignatureBuilder authSignatureBuilder = new YourAuthSignatureBuilder();
 builder.withAuthSignatureBuilder(authSignatureBuider);
 or // Oauth2 + DPoP (only for internal usage)
-AuthDPoPSignatureBuilder authDPoPSignatureBuilder = new YourAuthDPoPSignatureBuilder();
+AuthDpopSignatureBuilder authDpopSignatureBuilder = new YourAuthDpopSignatureBuilder();
 builder.withAuthDpopSignatureBuilder(authDPoPSignatureBuilder);
 ```
 
@@ -60,7 +60,7 @@ FaasClient faasClient = builder.build();
 
 ### DPoP authorization
 
-The client supports Oauth2+DPoP authorization ONLY FOR INTERNAL USE in service-to-service. You must provide your implementation of the `AuthDPoPSignatureBuilder` during the initialization.
+The client supports Oauth2+DPoP authorization ONLY FOR INTERNAL USE in service-to-service. You must provide your implementation of the `AuthDpopSignatureBuilder` during the initialization.
 
 ### Optional fields for builder
 
