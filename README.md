@@ -48,8 +48,8 @@ or
 AuthSignatureBuilder authSignatureBuilder = new YourAuthSignatureBuilder();
 builder.withAuthSignatureBuilder(authSignatureBuider);
 or // Oauth2 + DPoP (only for internal usage)
-AuthDpopSignatureBuilder authDpopSignatureBuilder = new YourAuthDpopSignatureBuilder();
-builder.withAuthDpopSignatureBuilder(authDPoPSignatureBuilder);
+AuthDPoPSignatureBuilder  authDPoPSignatureBuilder = new YourAuthDPoPSignatureBuilder();
+builder.withAuthDPoPSignatureBuilder(authDPoPSignatureBuilder);
 ```
 
 This is the bare minimum that has to be provided to build the client.
@@ -60,7 +60,7 @@ FaasClient faasClient = builder.build();
 
 ### DPoP authorization
 
-The client supports Oauth2+DPoP authorization ONLY FOR INTERNAL USE in service-to-service. You must provide your implementation of the `AuthDpopSignatureBuilder` during the initialization.
+The client supports Oauth2+DPoP authorization ONLY FOR INTERNAL USE in service-to-service. You must provide your implementation of the `AuthDPoPSignatureBuilder` during the initialization.
 
 ### Optional fields for builder
 
