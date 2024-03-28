@@ -168,9 +168,9 @@ public class FaaSWebClient implements FaaSClient {
             if (this.authDPoPSignatureBuilder != null) {
                 String domainUrl = PROTOCOL + "://" + this.getGWDomain();
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
+                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
                         accessToken);
-                headers = this.getHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, dpopJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
                 headers = this.getHeaders(authHeader, requestId);
@@ -225,9 +225,9 @@ public class FaaSWebClient implements FaaSClient {
             if (this.authDPoPSignatureBuilder != null) {
                 String domainUrl = PROTOCOL + "://" + this.getUIDomain();
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
+                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
                         accessToken);
-                headers = this.getHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, dpopJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
                 headers = this.getHeaders(authHeader, requestId);
@@ -278,9 +278,9 @@ public class FaaSWebClient implements FaaSClient {
             if (this.authDPoPSignatureBuilder != null) {
                 String domainUrl = PROTOCOL + "://" + this.getGWDomain();
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
+                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
                         accessToken);
-                headers = this.getHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, dpopJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
                 headers = this.getHeaders(authHeader, requestId);
@@ -331,9 +331,9 @@ public class FaaSWebClient implements FaaSClient {
             if (this.authDPoPSignatureBuilder != null) {
                 String domainUrl = PROTOCOL + "://" + this.getGWDomain();
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
+                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
                         accessToken);
-                headers = this.getHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, dpopJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
                 headers = this.getHeaders(authHeader, requestId);
