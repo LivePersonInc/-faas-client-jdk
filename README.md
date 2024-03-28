@@ -35,7 +35,7 @@ FaasClient.Builder builder = new FaasWebClient.Builder(accountId);
 
 Furthermore you have to choose a method of authorization.
 Either you provide a client secret and client Id, as we use OAuth 2.0 with client credentials by default, 
-or you alternatively pass your own implementation of the `AuthSignatureBilder` or `AuthDpopSignatureBuilder`.
+or you alternatively pass your own implementation of the `AuthSignatureBuilder` or `AuthDpopSignatureBuilder`.
 
 * [More information on Client Credentials](https://developers.liveperson.com/liveperson-functions-foundations-external-invocation.html#authentication)
 
