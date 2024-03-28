@@ -170,10 +170,10 @@ public class FaaSWebClient implements FaaSClient {
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
                 String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
                         accessToken);
-                headers = this.setHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, popJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.setHeaders(authHeader, requestId);
+                headers = this.getHeaders(authHeader, requestId);
             }
 
             String response = restClient.get(url, headers, timeOutInMs);
@@ -227,10 +227,10 @@ public class FaaSWebClient implements FaaSClient {
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
                 String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
                         accessToken);
-                headers = this.setHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, popJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.setHeaders(authHeader, requestId);
+                headers = this.getHeaders(authHeader, requestId);
             }
 
             logger.info(String.format(REQUEST_LOG_GET_LAMBDAS, requestId, accountId, url));
@@ -280,10 +280,10 @@ public class FaaSWebClient implements FaaSClient {
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
                 String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
                         accessToken);
-                headers = this.setHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, popJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.setHeaders(authHeader, requestId);
+                headers = this.getHeaders(authHeader, requestId);
             }
 
             logger.info(String.format(REQUEST_LOG_INVOKE, requestId, accountId, url, data));
@@ -333,10 +333,10 @@ public class FaaSWebClient implements FaaSClient {
                 String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
                 String popJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
                         accessToken);
-                headers = this.setHeaders(accessToken, requestId, popJwt);
+                headers = this.getHeaders(accessToken, requestId, popJwt);
             } else {
                 String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.setHeaders(authHeader, requestId);
+                headers = this.getHeaders(authHeader, requestId);
             }
 
             logger.info(String.format(REQUEST_LOG_INVOKE, requestId, accountId, url, data));
@@ -429,10 +429,10 @@ public class FaaSWebClient implements FaaSClient {
      * Set headers for the RESTful call
      *
      * @param authorizationHeader the authorization header
-     * @param requestId
+     * @param requestId identifies the request 
      * @return the relevant headers
      */
-    private Map<String, String> setHeaders(String authorizationHeader, String requestId) {
+    private Map<String, String> getHeaders(String authorizationHeader, String requestId) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("X-REQUEST-ID", requestId);
         headers.put(HttpHeaders.AUTHORIZATION, authorizationHeader);
@@ -443,11 +443,11 @@ public class FaaSWebClient implements FaaSClient {
      * Set headers for the RESTful call
      *
      * @param accessToken the Oauth2 + DPoP access token
-     * @param requestId
-     * @param dpopJwt     the DPoP header
+     * @param requestId identifies the request
+     * @param dpopJwt the DPoP header
      * @return the relevant headers
      */
-    private Map<String, String> setHeaders(String accessToken, String requestId, String dpopJwt) {
+    private Map<String, String> getHeaders(String accessToken, String requestId, String dpopJwt) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("X-REQUEST-ID", requestId);
         headers.put(HttpHeaders.AUTHORIZATION, "DPoP " + accessToken);
