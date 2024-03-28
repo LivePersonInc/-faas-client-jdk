@@ -164,17 +164,8 @@ public class FaaSWebClient implements FaaSClient {
             url = buildGWDomainUrl(externalSystem, invokeUri);
             logger.info(String.format(REQUEST_LOG_IS_IMPLEMENTED, requestId, accountId, url));
 
-            Map<String, String> headers;
-            if (this.authDPoPSignatureBuilder != null) {
-                String domainUrl = PROTOCOL + "://" + this.getGWDomain();
-                String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
-                        accessToken);
-                headers = this.getHeaders(accessToken, requestId, dpopJwt);
-            } else {
-                String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.getHeaders(authHeader, requestId);
-            }
+            Map<String, String> headers = generateRequestHeaders(this.getGWDomain(), url, requestId,
+                    HttpMethod.GET.name());
 
             String response = restClient.get(url, headers, timeOutInMs);
 
@@ -221,17 +212,8 @@ public class FaaSWebClient implements FaaSClient {
             String getLambdasUri = String.format(GET_LAMBDAS_URI, accountId);
             url = buildUIDomainUrl(userId, optionalQueryParams, getLambdasUri);
 
-            Map<String, String> headers;
-            if (this.authDPoPSignatureBuilder != null) {
-                String domainUrl = PROTOCOL + "://" + this.getUIDomain();
-                String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.GET.name(),
-                        accessToken);
-                headers = this.getHeaders(accessToken, requestId, dpopJwt);
-            } else {
-                String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.getHeaders(authHeader, requestId);
-            }
+            Map<String, String> headers = generateRequestHeaders(this.getUIDomain(), url, requestId,
+                    HttpMethod.GET.name());
 
             logger.info(String.format(REQUEST_LOG_GET_LAMBDAS, requestId, accountId, url));
             String response = restClient.get(url, headers, timeOutInMs);
@@ -274,17 +256,8 @@ public class FaaSWebClient implements FaaSClient {
             lambdaOrEventName = extractLambdaOrEventName(invokeUri);
             url = buildGWDomainUrl(externalSystem, invokeUri);
 
-            Map<String, String> headers;
-            if (this.authDPoPSignatureBuilder != null) {
-                String domainUrl = PROTOCOL + "://" + this.getGWDomain();
-                String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
-                        accessToken);
-                headers = this.getHeaders(accessToken, requestId, dpopJwt);
-            } else {
-                String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.getHeaders(authHeader, requestId);
-            }
+            Map<String, String> headers = generateRequestHeaders(this.getGWDomain(), url, requestId,
+                    HttpMethod.POST.name());
 
             logger.info(String.format(REQUEST_LOG_INVOKE, requestId, accountId, url, data));
             String response = restClient.post(url, headers, data.toString(),
@@ -327,17 +300,8 @@ public class FaaSWebClient implements FaaSClient {
             lambdaOrEventName = extractLambdaOrEventName(invokeUri);
             url = buildGWDomainUrl(externalSystem, invokeUri);
 
-            Map<String, String> headers;
-            if (this.authDPoPSignatureBuilder != null) {
-                String domainUrl = PROTOCOL + "://" + this.getGWDomain();
-                String accessToken = this.authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
-                String dpopJwt = this.authDPoPSignatureBuilder.getDpopHeaderInternal(url, HttpMethod.POST.name(),
-                        accessToken);
-                headers = this.getHeaders(accessToken, requestId, dpopJwt);
-            } else {
-                String authHeader = authSignatureBuilder.getAuthHeader();
-                headers = this.getHeaders(authHeader, requestId);
-            }
+            Map<String, String> headers = generateRequestHeaders(this.getGWDomain(), url, requestId,
+                    HttpMethod.POST.name());
 
             logger.info(String.format(REQUEST_LOG_INVOKE, requestId, accountId, url, data));
             restClient.post(url, headers, data.toString(), timeOutInMs);
@@ -426,10 +390,34 @@ public class FaaSWebClient implements FaaSClient {
     }
 
     /**
+     * Generates the request headers based on the authentication method
+     * 
+     * @param domain    the request domain
+     * @param url       the request full url including domain and path parameters
+     * @param requestId the request identification
+     * @param method    the request method
+     * @return the request required headers
+     * @throws TokenGenerationException
+     * @throws DPoPJwtGenerationException
+     */
+    private Map<String, String> generateRequestHeaders(String domain, String url, String requestId, String method)
+            throws TokenGenerationException, DPoPJwtGenerationException {
+        if (this.authDPoPSignatureBuilder != null) {
+            String domainUrl = PROTOCOL + "://" + domain;
+            String accessToken = authDPoPSignatureBuilder.getAccessTokenInternal(domainUrl);
+            String dpopJwt = authDPoPSignatureBuilder.getDpopHeaderInternal(url, method, accessToken);
+            return this.getHeaders(accessToken, requestId, dpopJwt);
+        } else {
+            String authHeader = authSignatureBuilder.getAuthHeader();
+            return this.getHeaders(authHeader, requestId);
+        }
+    }
+
+    /**
      * Set headers for the RESTful call
      *
      * @param authorizationHeader the authorization header
-     * @param requestId identifies the request 
+     * @param requestId           identifies the request
      * @return the relevant headers
      */
     private Map<String, String> getHeaders(String authorizationHeader, String requestId) {
@@ -443,8 +431,8 @@ public class FaaSWebClient implements FaaSClient {
      * Set headers for the RESTful call
      *
      * @param accessToken the Oauth2 + DPoP access token
-     * @param requestId identifies the request
-     * @param dpopJwt the DPoP header
+     * @param requestId   identifies the request
+     * @param dpopJwt     the DPoP header
      * @return the relevant headers
      */
     private Map<String, String> getHeaders(String accessToken, String requestId, String dpopJwt) {
